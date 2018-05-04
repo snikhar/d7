@@ -1,0 +1,76 @@
+<?php
+function trainee_schema() {
+  $schema['trainee'] = array(
+     // specification for mytable1	 
+	'description' => t('Trainee Details.'),
+    'fields' => array(
+	
+		'id' => array(
+		'description' => 'The current id',
+        'type' => 'serial',
+        'not null' => TRUE,
+		'unsigned' => TRUE),
+		
+		'name' => array(
+        'description' => 'The title of this node.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        ),
+	
+		'course' => array(
+		'description' => 'The course name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        ),
+				
+		'enrolno' => array(
+		'description' => 'Enrolment no for course',
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+        ),		
+	),
+	'primary key' => array('id'),
+  );
+ $schema['course'] = array(
+     // specification for mytable2
+
+    'description' => t('Trainee Details.'),
+	    'fields' => array(
+
+                'id' => array(
+                'description' => 'The course id',
+       		'type' => 'serial',
+        	'not null' => TRUE,
+                'unsigned' => TRUE),
+
+                'course_name' => array(
+        	'description' => 'The title of this node.',
+       		'type' => 'varchar',
+        	'length' => 255,
+        	'not null' => TRUE,
+       	 	),
+
+                'duration' => array(
+                'description' => 'The course name',
+        	'type' => 'varchar',
+        	'length' => 255,
+        	'not null' => TRUE,
+        	),
+
+                'best_book' => array(
+                'description' => 'Enrolment no for course',
+        	'type' => 'varchar',
+        	'length' => 255,
+        	'not null' => TRUE,
+        	),
+        ),
+        'primary key' => array('id'),
+
+
+  );
+  return $schema;
+}
+?>

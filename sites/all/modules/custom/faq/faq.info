@@ -1,0 +1,4 @@
+name = FAQ
+description = This is FAQ system
+package = FAQ
+core = "7.x"

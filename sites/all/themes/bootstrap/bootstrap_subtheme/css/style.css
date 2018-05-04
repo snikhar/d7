@@ -1,0 +1,69 @@
+/**
+ * This file should get overwritten if Method 1 is used. If Method 2 is chosen,
+ * remove this comment and start adding your styles to this file.
+ */
+
+#add-cart-btn .form-submit,
+#my-cart .line-item-summary-view-cart,
+.line-item-summary-checkout{
+  background: #fff;*/
+  border: 1px solid #e4e4e4;
+  border-bottom: 1px solid #b4b4b4;
+  border-left-color: #d2d2d2;
+  border-right-color: #d2d2d2;
+  /*color: #3a3a3a;*/
+  cursor: pointer;
+  font-size: 0.929em;
+  font-weight: normal;
+  text-align: center;
+  margin-bottom: 1em;
+  margin-right: 0.6em; /* LTR */
+  padding: 4px 17px;
+  -khtml-border-radius: 15px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+  color: white;
+  background-color: #9fc748;
+}
+#product-catalog{
+  float:left;
+  padding:2% 2% 2% 2%;
+  width:40%;
+  margin-left: auto;
+  margin-right: auto;
+}
+h2, .h2 {
+    font-size: 25px;
+    font-family: initial;
+}
+h1, .h1 {
+    font-size: 27px;
+    font-family: initial;
+}
+.list-inline > li {
+    display: inline-block;
+}
+.line-item-summary .links li.last {
+    padding-right:15px;
+    padding-left:15px;
+}
+#block-commerce-cart-cart,
+#block-system-navigation {
+    border: 1px solid #E7E7E7;
+    padding: 5px 5px 5px 5px;
+}
+#block-system-navigation {
+    margin-top: 15px;
+}
+.highlighted{
+padding-bottom: 10px;
+}
+img {
+width: 100% !important;
+height: auto !important;
+display: inline-block;
+}
+.view{
+text-align:left;
+}

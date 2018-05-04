@@ -1,0 +1,40 @@
+<?php 
+
+
+function collegedetails_help($path, $arg){
+	if($path == 'admin/help#collegedetails'){
+		$op = '<h3>'. t('About Me') .'</h3>';
+		return $op;
+	}
+}
+
+
+function collegedetails_menu(){
+	
+	$items['collegedetails/add'] = array(
+		'type' => 'MENU_NORMAL_ITEM',
+		'title' => 'Add college',
+		'description' => 'add new college entry here',
+		'page callback' => 'drupal_get_form',
+		'page argument' => array('collegedetails_add'),
+		'access arguments' => array('access content')
+
+	);
+	return $items;
+}
+
+function collegedetails_add(){
+ 	$form = array();
+	
+	$form['name'] = array(
+		'#type' => 'textield',
+		'#description' => t('name of college'),
+		'#title' => t('College Name')
+	);	
+	return $form;
+}
+
+
+
+
+?>

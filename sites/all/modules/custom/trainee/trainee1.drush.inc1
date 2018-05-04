@@ -1,0 +1,19 @@
+<?php
+
+/*
+*
+* Implementing Drush Command
+*
+*/
+
+
+function drush_trainee_command(){
+	$items['drush-trainee-command'] = array(
+		'description' => 'Demonstrate how Drush commands work.',
+		'aliases' => array('dtc'),	
+	);
+}
+
+
+
+?>

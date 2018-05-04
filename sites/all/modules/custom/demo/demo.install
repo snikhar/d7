@@ -1,0 +1,53 @@
+<?php
+
+
+function demo_schema(){
+
+	$schema['demo_project'] = array(
+
+		'description' => 'demo_project table schema',
+		'fields' => array(
+
+			'id' => array(
+				'type' => 'serial',
+				'unsigned' => TRUE,			
+				'not null' => TRUE,
+			),
+
+			'name' => array(
+                                'type' => 'varchar',
+                                'not null' => TRUE,
+				'length' => 255,
+
+                        ),
+
+			'description' => array(
+                                'type' => 'text',
+                                'not null' => TRUE,
+				'size' => 'big',
+
+                        ),
+
+			'deadline' => array(
+                                'type' => 'int',
+                                'unsigned' => TRUE,
+                                'not null' => TRUE,
+
+                   	),
+
+		),
+		'primary key' => array('id'),
+		'foreign key' => array(
+			'trainee' => array(
+				'table' => 'trainee', 
+				'columns' => array(
+					'fk_trainee_id' => 'id'
+				)
+			),
+		),
+	);
+
+	return $schema;
+
+}
+

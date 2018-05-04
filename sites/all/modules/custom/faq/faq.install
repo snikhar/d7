@@ -1,0 +1,39 @@
+<?php
+
+function faq_schema(){
+
+	$schema['faq_data'] = array(
+		'description' => 'faq data is here',
+		'fields' => array(
+			'id' => array(
+				'description' => 'The current id',
+        			'type' => 'serial',
+       	 			'not null' => TRUE,
+				'unsigned' => TRUE
+			),	
+			'title' => array(
+				'description' => 'label of content',
+                                'type' => 'varchar',
+                                'not null' => TRUE,
+				'length' => 255,
+
+			),
+			'description' => array(
+                                'description' => 'label of content',
+                                'type' => 'varchar',
+                                'not null' => TRUE,
+                                'length' => 255,
+
+                        ),
+			
+		),
+		'primary key' => array('id'),
+
+	);
+	return $schema;
+}
+
+
+
+
+

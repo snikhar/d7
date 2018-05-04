@@ -1,0 +1,6 @@
+name = Drupal MVC
+description = "MVC on Drupal"
+package = "DMVC"
+
+; Core version (required)
+core = 7.x

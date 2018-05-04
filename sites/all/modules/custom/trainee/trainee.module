@@ -1,0 +1,269 @@
+<?php
+
+/*
+* implemention of hook_help() function
+*/
+
+function trainee_help($path, $arg){
+	if($path == 'admin/help#trainee'){
+		$output = '<h2>' . t('About Trainee') . '</h2>';
+		return $output;
+	}
+}
+
+function trainee_menu(){
+	$items = array();
+	$items['trainee/add'] = array(
+		'title' => 'Add trainee',
+		'description' => 'add records for trainee',
+		'type' => MENU_CALLBACK,
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('trainee_add'),
+		'access callback' => TRUE,
+		'access arguments' => array('access trainee')
+	
+	);
+	
+	$items['trainee/list'] = array(
+		'title' => 'List of trainee',
+		'description' => 'List view records for trainee',
+		'type' => MENU_NORMAL_ITEM,
+		'page callback' => 'trainee_list',
+		'access callback' => TRUE,
+		'access arguments' => array('access trainee')
+	
+	);
+	
+	$items['trainee/edit/%'] = array(
+		'title' => 'Edit trainee record',
+		'description' => 'Edit records for trainee',
+		'page callback' => 'trainee_edit_form',
+		'page arguments' => array(2),
+		'access callback' => TRUE,
+		'access arguments' => array('access trainee')
+	
+	);
+	
+	$items['trainee/delete/%'] = array(
+		'title' => 'List of trainee form',
+		'description' => 'Delete records of trainee',
+		'page callback' => 'trainee_delete',
+		'page arguments' => array(2),
+		'access callback' => TRUE	
+	);
+	return $items;
+}
+
+function trainee_add($form, &$form_state){                               //   Add form
+	
+	$form['name'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Trainee Name'),
+		'#description' => t('Add Trainee Name'),
+		'#maxlength' => '15',
+		'#required' => TRUE,
+	
+	);
+	$form['course'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Course Name'),
+		'#description' => t('Add Trainee Name'),
+		'#maxlength' => '15',
+		'#required' => TRUE,
+	
+	);
+	$form['enrolno'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Enrolment No'),
+		'#description' => t('Add Enrolment No'),
+		'#maxlength' => '15',
+		'#required' => TRUE,
+	
+	);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Save')
+	);
+	
+	$form['#submit'][] = 'trainee_add_submit_handler';
+	return $form;
+}
+
+function trainee_add_submit_handler($form, &$form_state){                         //    Add form submit handler
+	$name = $form_state['values']['name'];
+	$course = $form_state['values']['course'];
+	$enrolno = $form_state['values']['enrolno'];
+	
+	$con = db_insert('trainee')->fields(array(
+			'name' => $name,
+			'course' => $course,
+			'enrolno' => $enrolno,
+		))->execute();
+	
+	drupal_set_message(t('Record added successfully'));
+	
+}
+
+function trainee_list(){                       // List View
+	
+	$result = db_select('trainee', 't')->fields('t', array('id', 'name', 'course', 'enrolno'))->execute();
+	
+	$output = '<table><thead><th>SR. No.</th><th>Candidate Name</th><th>Course Title</th><th>Candiadate Enrolment No.</th><th>Action</th></thead>';
+	foreach($result as $row){
+		
+		$output .='<tr>
+					<td>'.$row->id.'</td>
+					<td>'.$row->name.'</td>
+					<td>'.$row->course.'</td>
+					<td>'.$row->enrolno.'</td>
+					<td><a href="/trainee/edit/'.$row->id.'">Edit</a> | <a href="/trainee/delete/'.$row->id.'" onclick="return confirm(\'Are you sure to delete record?\')">Delete</a></td>
+					</tr>';
+	}
+	
+	$output .='</table>';
+	$output .='<br/> <a href="/trainee/add">Add Trainee</a>';
+	return $output;
+}
+
+function trainee_edit_form(){
+	
+	$form_content = drupal_get_form('trainee_edit');
+	$block = array(
+		'content' => $form_content,
+	);
+	return $block;
+		
+}
+
+
+function trainee_edit($form, &$form_state){
+	
+	$id = arg(2);
+	//$data = db_query('select * from trainee where id = :tid', array(':tid' => $id));
+	$data = db_select('trainee','t')->fields('t', array('id','name','course','enrolno'))->condition('id', $id,'=')-> execute();
+	//$row = $data->fetchObject();
+	foreach($data as $res){
+		$row = $res;
+	}
+	$form['id'] = array(
+			'#type' => 'hidden',
+			'#default_value' => $row->id,
+	);
+	$form['name'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Trainee Name'),
+		'#description' => t('Add Trainee Name'),
+		'#default_value' => t($row->name),
+		'#maxlength' => '15',
+		'#required' => TRUE,
+	
+	);
+	$form['course'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Course Name'),
+		'#description' => t('Add Trainee Name'),
+		'#default_value' => t($row->course),
+		'#maxlength' => '15',
+		'#required' => TRUE,
+	
+	);
+	$form['enrolno'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Enrolment No'),
+		'#description' => t('Add Enrolment No'),
+		'#default_value' => t($row->enrolno),
+		'#maxlength' => '15',
+		'#required' => TRUE,
+	
+	);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Save')
+	);
+	
+	$form['#submit'][] = 'trainee_edit_submit_handler';
+	return $form;
+	
+	//var_dump($row);exit;
+	//drupal_set_message(t('Record Successfully edited'));
+}
+
+function trainee_edit_submit_handler($form, &$form_state){
+	
+	$id = $form_state['values']['id'];
+	$name = $form_state['values']['name'];
+	$course = $form_state['values']['course'];
+	$enrolno = $form_state['values']['enrolno'];
+	
+	$con = db_update('trainee')->fields(array(
+			'name' => $name,
+			'course' => $course,
+			'enrolno' => $enrolno	
+		))->condition('id', $id, '=')->execute();
+		drupal_set_message(t('Record Successfully edited.'));
+	
+}
+
+
+
+function trainee_delete(){
+	$id = arg(2);
+	$con = db_delete('trainee')->condition('id', $id, '=')->execute();
+	drupal_set_message(t('Record successfully deleted'));
+	drupal_goto('/trainee/list');
+}
+	
+
+function trainee_entity_info(){
+
+/*	$entity['trainee'] = array(
+		'label' => t('trainee'),
+		'plural label' => t('trainee'),
+		'entity class' => 'Entity',
+		'controller class' => 'EntityAPIController',
+		'module' => 'trainee',
+		'base table' => 'trainee',
+		'fieldable' => FALSE,
+		'entity keys' => array(
+			'trainee_id' => 'id'	
+		)	
+	);*/
+
+	 $entity['course'] = array(
+                'label' => t('course'),
+                'plural label' => t('course'),
+                'entity class' => 'Entity',
+                'controller class' => 'EntityAPIController',
+                'module' => 'trainee',
+                'base table' => 'course',
+                'fieldable' => FALSE,
+                'entity keys' => array(
+                        'course_id' => 'id'
+                )
+        );
+}
+
+
+function trainee_theme() {
+  return array( 'trainee_add' => array(
+    'render element' => 'form',
+    'template' => 'trainee-add-form',
+    'arguments' => array(),
+    ),
+  );
+}
+
+
+function trainee_form_room_reservations_admin_settings_alter(&$form, &$form_state) {
+  $form ['room_reservations_advance_standard'] = array(
+    '#title' => t('Days in advance (standard)'),
+    '#type' => 'select',
+    '#options' => array(7 => 7, 10 => 10, 14 => 14, 30 => 30, 60 => 60, 90 => 90), 
+    '#description' => t('The number of days in advance that a reservation can be made by a standard user. Default is 14. Maximum is 90.'),
+    '#default_value' => variable_get('room_reservations_advance_standard', 10),
+  );
+}
+
+
+
+?>

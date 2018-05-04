@@ -1,0 +1,39 @@
+<?php
+
+function collegedetails_schema() {
+	$schema['college_details'] = array(
+		"description" => "Contains college info",
+		"fields" => array(
+			"id" => array(
+				"description" => "Primary key",
+				"type" => "serial",		//Auto increment
+				"unsigned" => TRUE,
+				"not null" => TRUE
+			),
+			"title" => array(
+				"description" => "Title of College",
+				"type" => "varchar",
+				"not null" => true,
+				"default" => "",
+				"length" => 255
+			),
+			"rank" => array(
+				"description" => "College rank",
+				"type" => "int",
+				"unsigned" => TRUE,
+				"not null" => TRUE,
+				"default" => 1
+			),
+			"university" => array(
+				"description" => "University of College",
+				"type" => "varchar",
+				"not null" => true,
+				"default" => "Mumbai University",
+				"length" => 255
+			)
+		),
+		"primary key" => array("id"),
+	);
+	
+	return $schema;
+}

@@ -1,0 +1,41 @@
+name = Booking Timeslots
+description = Booking timeslots module
+core = 7.x
+package = Date/Time
+php = 5.3
+version = 7.x-1.0
+project = booking_timeslots
+dependencies[] = addressfield
+dependencies[] = calendar
+dependencies[] = date
+dependencies[] = entity
+dependencies[] = entityreference
+dependencies[] = features
+dependencies[] = hierarchical_select
+dependencies[] = hs_taxonomy
+dependencies[] = hs_taxonomy_views
+dependencies[] = list
+dependencies[] = number
+dependencies[] = opening_hours
+dependencies[] = options
+dependencies[] = strongarm
+dependencies[] = taxonomy
+dependencies[] = views
+dependencies[] = workflow
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:1
+features[field][] = booking-booking-field_bt_ct_ref_1
+features[field][] = booking-booking-field_bt_ct_ref_2
+features[field][] = booking-booking-field_bt_ct_ref_3
+features[field][] = booking-booking-field_bt_ct_ref_4
+features[field][] = booking-booking-field_bt_number_of_people
+features[field][] = booking-booking-field_bt_user
+features[taxonomy][] = booking_type
+files [] = booking_timeslots.module
+
+; Information added by Drupal.org packaging script on 2015-05-22
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "booking_timeslots"
+datestamp = "1432303082"
+

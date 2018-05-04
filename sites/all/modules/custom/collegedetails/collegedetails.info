@@ -1,0 +1,4 @@
+name = "College Details"
+description = "my custom module college details with CRUD operation"
+core = 7.x
+package = "My custom Module"

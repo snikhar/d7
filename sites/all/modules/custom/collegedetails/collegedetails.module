@@ -1,0 +1,139 @@
+<?php
+
+function collegedetails_help($path, $arg){
+
+	if($path == 'admin/help#collegedetails'){
+		$output = '<h3>' . t('About me') . '</h3>';
+		return $output;
+	}
+
+}
+
+function collegedetails_menu(){
+
+	$items['collegedetails/list'] = array(
+                'type' => MENU_CALLBACK,
+                'page callback' => 'drupal_get_form',
+                'page arguments' => array('collegedetails_list'),
+                'accesss arguments' => array('access content'),
+                'access callback' => TRUE
+        );
+
+	$items['collegedetails/edit/%'] = array(
+                'type' => MENU_CALLBACK,
+                'page callback' => 'collegedetails_edit',
+                'page arguments' => array(2),
+                'accesss arguments' => array('access college_details'),
+                'access callback' => TRUE
+        );
+
+
+	$items['collegedetails/add'] = array(		
+		'type' => MENU_CALLBACK,
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('collegedetails_add'),
+		'accesss arguments' => array('access college_details'),
+		'access callback' => TRUE
+	);
+	return $items;
+}
+
+
+function collegedetails_list($form, &$form_state){
+
+	
+	$nid = db_select('college_details', 'c');
+//	$result = $nid->fields('c', array('id', 'title', 'rank', 'university'))->extend('TableSort')->orderByHeader($header)->extend(PagerDefault)->execute();
+
+	$result = $nid->fields('c', array('id', 'title', 'rank', 'university'))->execute();
+	$output = "";
+	$output = "<table border='1'><tr><td>No</td><td> Title </td><td> Rank </td> University <td> Action </td> </tr>";
+
+
+	foreach($result as $row){
+		
+	//	echo $row->id;	
+	
+	 $output .= "<tr><td>" .$row->id. "</td><td>" .$row->title. "</td><td>" .$row->rank. " </td><td>" .$row->university."</td><td><a href='collegedetails/edit/" . $row->id . "'>Edit</a> | <a href='collegedetails/delete/" . $row->id . "' onclick='return confirm(\"are you sure\")'> Delete </a></td></tr>";
+
+	}
+	$output .= "</table>";
+		
+	/*var_dump($output);
+	if(empty($output)){
+
+		$output .= t("No results found.");
+	}
+	$output .= '<br /><a href="collegedetails/add">Add new record</a>';
+*/
+
+	return $output;
+
+}
+
+
+function collegedetails_add($form, &$form_state){
+
+	
+	
+	$form['title'] = array(
+		'#type' => 'textfield',
+		'#description' => t('college name'),
+		'#title' => t('College Name')
+	);
+	
+	 $form['rank'] = array(
+                '#type' => 'textfield',
+                '#description' => t('college rank'),
+                '#title' => t('College rank')
+        );
+
+	 $form['university'] = array(
+                '#type' => 'textfield',
+                '#description' => t('college university'),
+                '#title' => t('College university')
+        );
+
+
+
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Save')
+	);
+
+	$form['#submit'][] = 'collegedetails_add_submit_handler';
+
+	return $form;
+
+}
+
+function collegedetails_add_submit_handler($form, &$form_state){
+
+	$name = $form_state['values']['title'];
+	$rank = $form_state['values']['rank'];
+	$university = $form_state['values']['university'];
+
+	$nid = db_insert('college_details')->fields(array(
+	'title' => $name,	
+	'rank' => $rank,
+	'university' => $university,
+	))->execute();
+	
+	drupal_set_message(t('record added'));
+
+}
+
+
+/*function collegedetails_add_validate($form, &$form_state){
+
+	if(empty($form_state['values']['title']))
+		form_set_error('name','name cannot be empty');
+	else if(empty($form_state['values']['rank']))
+		form_set_error('rank','Rank cannot be empty');
+	else if(empty($form_state['values']['university']))
+		form_set_error('university','University cannot be empty');
+
+
+}
+*/
+

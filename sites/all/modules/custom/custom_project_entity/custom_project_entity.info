@@ -1,0 +1,7 @@
+name = Custom Project Entity
+description = "Custom Project Entity"
+package = Custom Entity
+
+core = 7.x
+
+

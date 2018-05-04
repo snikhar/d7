@@ -1,0 +1,99 @@
+<?php
+
+/**
+*
+*  implementing hook_entity_info()
+*
+**/
+
+
+function demo_entity_info(){
+
+	$info = array();
+	
+	$info['trainee'] = array(
+
+		'label' => t('Trainee'),
+		'plural label' => t('Trainee'),
+		'base table' => 'demo_project',
+		'entity class' => 'Entity',
+		'controller class' => 'TraineeEntityController',
+		'entity keys' => array(
+			'id' => 'id',
+			'label' => 'name',
+		), 
+		'module' => 'demo',
+
+	);
+	
+	return $info;
+
+}
+
+
+function demo_menu(){
+
+	$items = array();
+
+	$items['trainee-detail'] = array(
+		'type' => MENU_NORMAL_ITEM,
+    		'title' => 'Trainee Details',
+		'page callback' => 'demo_trainees',
+    		'access arguments' => array('access content'),
+  	);
+
+
+	return $items;
+
+}
+
+function demo_trainees(){
+	$project = entity_load('trainee');
+	//var_dump($project);
+
+	//return "hellor";
+
+	if(!isset($project[3])){
+		$entity = entity_create('trainee', array('id' => 3));
+		$entity->name = t('spring house');
+		$entity->description = t('spring house demo');
+		$entity->deadline = '8376328';
+		$entity->save();
+
+	}
+
+
+	$list = entity_view('trainee', $project);
+	//dmp($project);
+	//var_dump($project);
+	//var_dump($list);
+	return $list;
+	//return "some thonf";
+}
+
+class TraineeEntityController extends EntityAPIController {
+
+    public function buildContent($entity, $view_mode = 'full', $langcode = NULL, $content = array()) {
+
+      $build = parent::buildContent($entity, $view_mode, $langcode, $content);
+
+      // Our additions to the $build render array.
+      $build['description'] = array(
+        '#type' => 'markup',
+        '#markup' => check_plain($entity->description),
+        '#prefix' => '<div class="project-description">',
+        '#suffix' => '</div>',
+      );
+     $build['deadline'] = array(
+        '#type' => 'markup',
+        '#markup' => date('d F, Y', check_plain($entity->deadline)),
+        '#prefix' => '<p>Deadline: ',
+        '#suffix' => '</p>',
+      );
+
+      return $build;
+
+    }
+
+  }
+

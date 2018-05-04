@@ -1,0 +1,129 @@
+<?php
+
+
+function faq_help($path, $arg){
+
+	if($path == "admin/help#faq"){
+		$output = '<h3>'. t('About FAQ') .'</h3>';
+		return $output;
+	}
+
+}
+
+
+function faq_menu(){
+
+	$items = array();
+
+	$items['faq/search'] = array(
+		'title' => 'FAQ Search',    
+		'page callback' => 'drupal_get_form',    
+		'page arguments' => array('faq_ajax_submit_form'),            //array('ajax_example_submit_driven_ajax'),    
+		'access callback' => TRUE,    
+		'access arguments' => array('access faq_data'),
+		'weight' => 3,
+	);
+
+
+	return $items;
+
+}
+
+function faq_ajax_submit_form($form, &$form_state){
+
+	$form['searchbox'] = array(
+		'#type' => 'textfield',
+		'#default_value' => t('Search'),
+		'#maxlength' => '30',
+		'#required' => TRUE,
+		'#title' => t('Search'),
+		'#description' => t('Put Your Query Here'),
+
+	);
+
+	 $form['submit'] = array(
+                '#type' => 'submit',
+                '#ajax' => array(
+                'callback' => 'faq_ajax_data_submit_callback',
+                'wrapper' => 'box',
+                ),
+                '#value' => t('Submit'),
+        );
+
+	 $form['box'] = array(
+                '#type' => 'markup',
+                '#prefix' => '<div id="box">',
+                '#suffix' => '</div>',
+                '#markup' => '',
+
+        );
+	
+	return $form;
+}
+
+
+
+
+
+function faq_ajax_data_submit_callback($form, &$form_state) {
+	 // In most cases, it is recomended that you put this logic in form generation
+	 // rather than the callback. Submit driven forms are an exception, because
+	 // you may not want to return the form at all.
+ 	
+	$searchStr = $form_state['values']['searchbox'];
+	
+
+	$searchStr = htmlspecialchars($searchStr);
+	$title = "%" . $searchStr . "%";
+	//$description = '%Among%';
+
+
+		
+	$sql = db_select('faq_data', 'f');
+	$sql->fields('f', array('id','title','description'))->condition(
+	db_or()->condition('title', $title,'like')
+		->condition('description', $title, 'like')
+	);
+	$data = $sql-> execute(); 
+
+	$count = $data->rowCount();
+ 	$op = false;
+	$output = "";
+	$element = "";
+	
+		
+
+	if($count>0){
+		$op = true;	
+	}
+
+	$output = '<table><thead><th> Label </th> <th> description </th></thead>';
+
+	foreach($data as $row){
+		
+		$output .='<tr><td><h3>'. $row->title . '</h3></td><td>' . $row->description . '</td></tr>';
+		
+	}
+	
+	$output .='</table>';
+
+	if($op){
+	
+	$element = $form['box'];
+        $element['#markup'] = "Your Search Result <br/>". $output;
+		
+	}
+	else{
+
+	$element = $form['box'];
+        $element['#markup'] = "No result found <br/>";
+
+
+	}
+	return $element;
+
+
+}
+
+
+

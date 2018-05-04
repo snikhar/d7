@@ -1,0 +1,4 @@
+name = Demo
+description = This is my demonstration for entity. 
+core = 7.x
+package = view
