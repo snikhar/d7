@@ -1,0 +1,396 @@
+<?php
+
+/*
+* implemention of hook_help() function
+*/
+
+function userprofile_help($path, $arg){
+	if($path == 'admin/help#trainee'){
+		$output = '<h2>' . t('About Trainee') . '</h2>';
+		return $output;
+	}
+}
+
+/*
+* implemention of hook_menu() function
+*/
+
+
+function userprofile_menu(){                              
+	$items = array();
+
+	/*$items['profile/delete/%'] = array(
+		'title' => 'Delete User Profile',
+		'description' => 'delete user',
+		'type' => MENU_NORMAL_ITEM,
+		'page callback' => 'userprofile_delete',
+		'page arguments' => array(2),
+		'access callback' => TRUE,
+		'access arguments' => array('access user_profile')
+	
+	);
+	*/
+
+	$items['profile/view'] = array(
+		'title' => 'View User Profile',
+		'description' => 'view user',
+		'type' => MENU_NORMAL_ITEM,
+		'page callback' => 'userprofile_view',
+		'access callback' => TRUE,
+		'access arguments' => array('access user_profile')
+	
+	);
+
+	$items['profile/add'] = array(
+		'title' => 'Add User Profile',
+		'description' => 'add records for user',
+		'type' => MENU_NORMAL_ITEM,
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('userprofile_add'),
+		'access callback' => TRUE,
+		'access arguments' => array('access user_profile')
+	
+	);
+	
+	return $items;
+}
+
+/*
+* implemention of hook_form() function
+*/
+
+function userprofile_add($form, &$form_state){  //   Add form    
+
+	$user_id = $GLOBALS['user']->uid;
+	$results = db_select('user_profile', 'u')->fields('u')->condition('uid', $user_id,'=')->condition('status', 1,'=')->execute()->fetchAssoc();
+	//var_dump($results);exit;
+	$form['about_me'] = array(
+		'#type' => 'textarea',
+		'#title' => t('About me'),
+		'#description' => t('Add your details in 300 character'),
+		'#default_value' => t($results['about_me']),
+		'#maxlength' => '300',
+		'#required' => TRUE,
+	
+	);
+	
+	$form['partner_preference'] = array(
+		'#type' => 'textarea',
+		'#title' => t("User's Partner Preference"),
+		'#description' => t('Add Partner Preference in 300 character'),
+		'#default_value' => t($results['partner_preference']),
+		'#maxlength' => '300',
+		'#required' => TRUE,
+	
+	);
+	
+	$form['birth_date'] = array(
+		'#type' => 'date_popup',
+		'#date_format' => "Y-m-d",
+		'#date_year_range' => '-50:-15',
+        '#date_timezone' => date_default_timezone(),
+		'#title' => t('Date of Birth'),
+		'#default_value' => t($results['birth_date']),
+		'#required' => TRUE,
+	
+	);
+	
+	$form['birth_place'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Birth Place'),
+		'#description' => t('Add Birth Place'),
+		'#default_value' => t($results['birth_place']),
+		'#maxlength' => '15',
+		'#required' => TRUE,	
+	);
+	
+	$form['gender'] = array(
+		'#type' => 'select',
+		'#title' => t('Gender'),
+		'#description' => t('Select gender'),
+		'#default_value' => t($results['gender']),
+		'#options' => array('male'=>'Male','female'=>'Female'),
+		'#required' => TRUE,	
+	);
+	
+	$form['religion'] = array(
+		'#type' => 'select',
+		'#title' => t('Religion'),
+		'#description' => t('Select Religion'),
+		'#default_value' => t($results['religion']),
+		'#options' => array('hindu'=>'Hindu','muslim'=>'Muslim','sikh'=>'Sikh','christian'=>'Christian'),
+		'#required' => TRUE,	
+	);
+	
+	$form['marital_status'] = array(
+		'#type' => 'select',
+		'#title' => t('Marital Status'),
+		'#description' => t('Select Marital Status'),
+		'#default_value' => t($results['marital_status']),
+		'#options' => array('single'=>'Single','married'=>'Married','widowed'=>'Widowed','divorced'=>'Divorced','seperated'=>'Separated'),
+		'#required' => TRUE,	
+	);
+	
+	$form['employment_type'] = array(
+		'#type' => 'select',
+		'#title' => t('User Employment Type'),
+		'#options' => array('business'=>'Business','self employed'=>'Self Employed','private'=>'Private','govnerment'=>'Govnerment'),
+		'#description' => t('Add Employment'),
+		'#default_value' => t($results['employment_type']),
+		'#required' => TRUE,	
+	);
+
+	$form['height'] = array(
+		'#type' => 'select',
+		'#title' => t('User Height'),
+		'#options' => array('5'=>'5','5.1'=>'5.1','5.2'=>'5.2','5.3'=>'5.3','5.4'=>'5.4','5.5'=>'5.5','5.6'=>'5.6','5.7'=>'5.7','5.8'=>'5.8','5.9'=>'5.9','5.10'=>'5.10','5.11'=>'5.11','6'=>'6','6.1'=>'6.1'),
+		'#description' => t('Add Height in ft'),
+		'#default_value' => t($results['height']),
+		'#required' => TRUE,	
+	);
+
+	$form['education'] = array(
+		'#type' => 'select',
+		'#title' => t('Education'),
+		'#description' => t('Select Education'),
+		'#default_value' => t($results['education']),
+		'#options' => array('under graduate'=>'Under Graduate','graduate'=>'Graduate','post graduate'=>'Post Graduate'),
+		'#required' => TRUE,	
+	);
+	
+	$form['hobbies'] = array(
+		'#type' => 'textfield',
+		'#title' => t('User Interest'),
+		'#description' => t('Add User Hobbies with comma separated values'),
+		'#default_value' => t($results['hobbies']),
+		'#maxlength' => '50',
+		'#required' => TRUE,
+	
+	);
+		
+	$form['user_img'] = array(
+		'#type' => 'managed_file',
+		'#name' => 'user_image',
+		'#title' => t('Profile Img'),
+		'#size' => 40,
+		'#description' => t("Image should be less than 400 pixels wide n Images must be one of jpg, gif or png formats.."),
+		'#default_value' => t($results['user_img']),
+		'#upload_location' => 'public://',
+        '#upload_validators' => array('file_validate_extensions' => array("png gif jpg")),
+	);
+
+	$form['mobile_number'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Mobile Number'),
+		'#description' => t('Add Mobile Number'),
+		'#default_value' => t($results['mobile_number']),
+		'#maxlength' => '10',
+		'#required' => TRUE,	
+	);
+
+	$form['living_location'] = array(
+		'#type' => 'select',
+		'#title' => t('Living Location'),
+		'#options' => array('mumbai'=>'Mumbai','pune'=>'Pune','banglore'=>'Banglore','gujarat'=>'Gujarat'),
+		'#description' => t('Add Living Location'),
+		'#default_value' => t($results['living_location']),
+		'#required' => TRUE,	
+	);
+
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Save')
+	);
+	
+	$form['#attributes']['enctype'] = "multipart/form-data";
+	$form['#validate'][] = 'userprofile_add_validate_handler';
+	$form['#submit'][] = 'userprofile_add_submit_handler';
+	return $form;
+}
+
+/*
+* implemention of hook_validate() function
+*/
+
+
+function userprofile_add_validate_handler($form, &$form_state){
+
+	$mobile_no = $form_state['values']['mobile_number'];
+	if(empty($mobile_no)){
+		form_set_error('mobile_number', t('mobile number fields empty' ));
+	}elseif(strlen($mobile_no)!=10){
+		form_set_error('mobile_number', t('Enter valid 10 digit mobile number.' ));
+	}
+
+	$about_me = $form_state['values']['about_me'];
+	if(empty($about_me)){
+		form_set_error('about_me', t('About me fields empty' ));
+	}elseif(strlen($about_me)>300){
+		form_set_error('about_me', t('About me should not exceed more that 300 characters.' ));
+	}
+
+	$partner_preference = $form_state['values']['partner_preference'];
+	if(empty($partner_preference)){
+		form_set_error('partner_preference', t('Partner preference fields empty' ));
+	}elseif(strlen($partner_preference)>300){
+		form_set_error('partner_preference', t('Partner preference should not exceed more that 300 characters.' ));
+	}
+
+	$birth_place = $form_state['values']['birth_place'];
+	if(empty($birth_place)){
+		form_set_error('birth_place', t('Birth place fields empty' ));
+	}elseif(strlen($birth_place)>15){
+		form_set_error('birth_place', t('Birth place should not exceed more that 15 characters.' ));
+	}
+	
+	$hobbies = $form_state['values']['hobbies'];
+	if(empty($hobbies)){
+		form_set_error('hobbies', t('Hobbies fields should not be empty' ));
+	}elseif(strlen($birth_place)>50){
+		form_set_error('hobbies', t('Hobbies should not exceed more that 50 characters.' ));
+	}
+
+	// hobbies birth_place partner_preference about_me
+}
+
+/*
+* implemention of hook_submit() function
+*/
+
+
+function userprofile_add_submit_handler($form, &$form_state){                         //    Add form submit handler
+
+	$user_id = $GLOBALS['user']->uid;                                                 // User UID
+	
+	//var_dump($_FILES["user_image"]["name"]);
+
+	if(isset($form_state["complete form"]["user_img"]["#file"]->filename)){
+	$user_img = "public://".$form_state["complete form"]["user_img"]["#file"]->filename;
+	$parts = pathinfo($user_img);	
+	$rename_user_img = md5(rand()).'.'.$parts['extension'];
+	$uri = "public://".$rename_user_img;
+
+	rename($user_img, $uri);   
+	//unlink($user_img);    
+	}else{
+		$rename_user_img = "";
+	}                                      // Rename User Profile image 
+	
+	$hobbies = $form_state['values']['hobbies'];		
+	$about_me = $form_state['values']['about_me'];
+	$partner_preference = $form_state['values']['partner_preference'];
+	$birth_date = $form_state['values']['birth_date'];		
+	$birth_place = $form_state['values']['birth_place'];	
+	$gender = $form_state['values']['gender'];
+	$religion = $form_state['values']['religion'];
+	$marital_status = $form_state['values']['marital_status'];
+	$education = $form_state['values']['education'];
+	$mobile_number = $form_state['values']['mobile_number'];
+	$living_location = $form_state['values']['living_location'];
+	$employment_type = $form_state['values']['employment_type'];
+	$height = $form_state['values']['height'];
+	
+
+	$results = db_select('user_profile', 'u')->fields('u')->condition('uid', $user_id,'=')->condition('status', 1,'=')->execute()->fetchAll();
+	$count = count($results);
+	//echo $count;
+	if($count>=1){
+		//update query
+		 $con = db_update('user_profile')->fields(array(
+			'uid' => $user_id,
+			'partner_preference' => $partner_preference,
+			'about_me' => $about_me,
+			'hobbies' => $hobbies,
+			'birth_date' => $birth_date,
+			'birth_place' => $birth_place,
+			'user_img' => $rename_user_img,
+			'gender' => $gender,
+			'religion' => $religion,			
+			'marital_status' => $marital_status,	
+			'employment_type' => $employment_type,		
+			'education' => $education,
+			'mobile_number' => $mobile_number,
+			'height' => $height,
+			'living_location' => $living_location,
+
+		))->condition('uid', $user_id,'=')->condition('status', 1,'=')->execute();
+
+		if($con){
+			drupal_set_message(t('Record updated successfully'));
+		}else{
+			drupal_set_message(t('Record not updated '));
+		}
+
+
+	}else{	
+
+	
+		$con = db_insert('user_profile')->fields(array(
+			'uid' => $user_id,
+			'partner_preference' => $partner_preference,
+			'about_me' => $about_me,
+			'hobbies' => $hobbies,
+			'birth_date' => $birth_date,
+			'birth_place' => $birth_place,
+			'user_img' => $rename_user_img,
+			'gender' => $gender,
+			'religion' => $religion,			
+			'marital_status' => $marital_status,	
+			'employment_type' => $employment_type,		
+			'education' => $education,
+			'mobile_number' => $mobile_number,
+			'height' => $height,
+			'living_location' => $living_location,
+
+		))->execute();
+			
+		if($con){
+			drupal_set_message(t('Record added successfully'));
+		}else{
+			drupal_set_message(t('Record not added '));
+		
+		}
+	}
+}
+
+function userprofile_view(){
+
+	return true;
+}
+
+
+/*
+function userprofile_delete(){
+	$id = arg(2);
+	$con = db_update('user_profile')fields(array(
+			'status' => 0))->condition('uid', $id, '=')->condition('status', 1,'=')->execute();
+
+	$con = db_update('users')fields(array(
+			'status' => 0))->condition('uid', $id, '=')->condition('status', 1,'=')->execute();
+
+	drupal_set_message(t('Record successfully deleted'));
+	drupal_goto('/user/logout');
+}
+	
+*/
+
+
+
+function userprofile_theme() {
+  return array( 
+
+  'userprofile_add' => array(
+    'render element' => 'form',
+    'template' => 'template/userprofile-add-form',
+    'arguments' => array(),
+    ),
+
+  'userprofile_view' => array(
+    'render element' => 'form',
+    'template' => 'template/userprofile-views-view',
+    'arguments' => array(),
+    ),
+
+  );
+}
+?>

@@ -1,0 +1,8 @@
+core = "7.x"
+description = "Detailed User Profile"
+name = "Userprofile"
+package = "Userprofile" 
+
+dependencies[] = date
+stylesheets[all][] = style.css
+scripts[] = somescript.js

@@ -1,0 +1,142 @@
+<?php
+function userprofile_schema() {
+
+  $schema['user_profile'] = array(
+     // specification for mytable1	 
+	'description' => t('User Profile Details.'),
+    'fields' => array(
+	
+		'id' => array(
+		'description' => 'The current id',
+        'type' => 'serial',
+        'not null' => TRUE,
+		'unsigned' => TRUE
+		),
+		
+		'uid' => array(
+		'description' => 'The user id',
+        'type' => 'int',		
+        'length' => 11,
+        'not null' => TRUE,
+		'unsigned' => TRUE
+		),
+				
+		'partner_preference' => array(
+		'description' => 'The expectations of user',
+        'type' => 'varchar',
+        'length' => 600,
+        'not null' => TRUE,
+        ),
+
+        'about_me' => array(
+		'description' => 'The about user',
+        'type' => 'varchar',
+        'length' => 600,
+        'not null' => TRUE,
+        ),
+			
+		'hobbies' => array(
+        'description' => 'The interests of this user.',
+        'type' => 'varchar',
+        'length' => 400,
+        'not null' => TRUE,
+        ),
+			
+		'birth_date' => array(
+		'description' => 'Birth date of user',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        ),		
+		
+		'birth_place' => array(
+		'description' => 'Birth place of user',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        ),	
+				
+		'user_img' => array(
+		'description' => 'User profile img',
+        'type' => 'varchar',
+        'length' => 255,
+        ),	
+		
+		'gender' =>array(
+		'description' => 'Gender',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+		),
+		
+		'religion' =>array(
+		'description' => 'Religion',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+		),
+		
+		'marital_status' =>array(
+		'description' => 'Marital Status',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+		),
+		
+		'employment_type' =>array(
+		'description' => 'Employment Type',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+		),
+
+		'mobile_number' =>array(
+		'description' => 'Mobile number',
+        'type' => 'varchar',
+        'length' => 15,
+        'not null' => TRUE,
+		),
+		
+		'education' =>array(
+		'description' => 'Education',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+		),
+		
+		'height' =>array(
+		'description' => 'user heignt',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+		),
+
+		'living_location' =>array(
+		'description' => 'user living location',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+		),
+
+		'status' => array(
+		'description' => 'Active status code',
+        'type' => 'int',
+        'length' => 11,
+		'default' => 1,
+        'not null' => TRUE,
+        ),
+	),
+	'primary key' => array('id'),
+	
+	'foreign keys' => array(
+    'users' => array(
+      'table' => 'users',
+      'columns' => array('uid' => 'uid'),
+      ),
+	),
+  );
+  
+  
+  return $schema;
+}
+?>
